@@ -106,10 +106,12 @@ export default function SecaoHero() {
               repeatType: "reverse",
               repeatDelay: 0.5,
             }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+            className="absolute bottom-16 left-1/2 transform -translate-x-1/2 cursor-pointer z-10"
             onClick={scrollParaProximaSecao}
           >
-            <ArrowDown className="text-marrom-escuro h-8 w-8" />
+            <div className="bg-bege-claro/80 p-2 rounded-full shadow-md hover:bg-bege-claro transition-colors">
+              <ArrowDown className="text-marrom-escuro h-6 w-6" />
+            </div>
           </motion.div>
         </motion.div>
       </div>
