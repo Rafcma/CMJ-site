@@ -45,7 +45,7 @@ export default function SecaoHero() {
       </div>
 
       <div className="container mx-auto px-4 z-10 flex flex-col items-center justify-center">
-        <motion.div style={{ opacity, scale, y }} className="text-center max-w-4xl mx-auto mb-12">
+        <motion.div style={{ opacity, scale, y }} className="text-center max-w-4xl mx-auto mb-12 relative">
           <div className="overflow-hidden">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-marrom-escuro leading-tight tracking-tighter mb-8">
               {titleWords.map((word, i) => (
@@ -80,7 +80,7 @@ export default function SecaoHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
+            className="flex flex-col sm:flex-row gap-6 justify-center mb-20"
           >
             <Link
               href="/contato-servico"
@@ -96,22 +96,25 @@ export default function SecaoHero() {
             </Link>
           </motion.div>
 
+          {/* Seta posicionada de forma fixa abaixo do botão */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              delay: 1.5,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-              repeatDelay: 0.5,
-            }}
-            className="absolute bottom-16 left-1/2 transform -translate-x-1/2 cursor-pointer z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.5 }}
+            className="absolute left-1/2 transform -translate-x-1/2 -bottom-16 cursor-pointer"
             onClick={scrollParaProximaSecao}
           >
-            <div className="bg-bege-claro/80 p-2 rounded-full shadow-md hover:bg-bege-claro transition-colors">
+            <motion.div
+              className="bg-bege-claro/80 p-3 rounded-full shadow-md hover:bg-bege-claro transition-colors"
+              animate={{ y: [0, -8, 0] }}
+              transition={{
+                duration: 2,
+                repeat: Number.POSITIVE_INFINITY,
+                repeatType: "loop",
+              }}
+            >
               <ArrowDown className="text-marrom-escuro h-6 w-6" />
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
