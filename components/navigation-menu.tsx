@@ -199,7 +199,7 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
                     >
                       <Link
                         href={link.href}
-                        className="text-marrom-escuro dark:text-bege-claro hover:text-marrom-medio dark:hover:text-marrom-claro text-5xl md:text-6xl font-light tracking-tighter hover:scale-105 transition-all duration-300"
+                        className="text-marrom-escuro dark:text-bege-claro hover:text-marrom-medio dark:hover:text-marrom-claro text-5xl md:text-6xl font-light tracking-tighter hover:scale-105 transition-all duration-300 hover:shadow-glow"
                         onClick={() => setIsOpen(false)}
                       >
                         {link.name}
@@ -215,9 +215,8 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
                 >
                   <div className="flex flex-col md:flex-row justify-between items-center text-sm text-marrom-escuro/70 dark:text-bege-claro/70">
                     <p>© {new Date().getFullYear()} CMJ CodeHaven Studio</p>
-                    <div className="flex space-x-4 mt-4 md:mt-0">
-                      <a href="mailto:contato@cmjcodehaven.com.br">contato@cmjcodehaven.com.br</a>
-                      <a href="tel:+551199998888">+55 (11) 9999-8888</a>
+                    <div className="mt-4 md:mt-0">
+                      <a href="mailto:cmjcodehaven@gmail.com">cmjcodehaven@gmail.com</a>
                     </div>
                   </div>
                 </motion.div>

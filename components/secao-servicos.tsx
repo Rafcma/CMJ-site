@@ -24,7 +24,7 @@ export default function SecaoServicos() {
   const servicos = [
     {
       icone: <Globe className="h-10 w-10 text-marrom-medio" />,
-      titulo: "Sites Institucionais",
+      titulo: "Sites",
       descricao:
         "Criamos sites profissionais que representam a identidade da sua marca e comunicam sua mensagem com eficiência.",
     },
@@ -85,7 +85,7 @@ export default function SecaoServicos() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-marrom-escuro/80 leading-relaxed"
+            className="text-marrom-escuro/80"
           >
             Oferecemos soluções digitais completas para impulsionar a presença online da sua empresa. Desde o design até
             o desenvolvimento e manutenção, cuidamos de cada detalhe para garantir resultados excepcionais.

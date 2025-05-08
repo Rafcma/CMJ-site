@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { Send, CheckCircle } from "lucide-react"
 import ParticleBackground from "./ui/particle-background"
 
 export default function SecaoContato() {
@@ -27,6 +27,7 @@ export default function SecaoContato() {
     nome: "",
     email: "",
     telefone: "",
+    tipoProjeto: "site",
     mensagem: "",
   })
 
@@ -38,7 +39,7 @@ export default function SecaoContato() {
 
   //#region Manipuladores de Eventos
   // Funções para lidar com eventos do formulário
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
@@ -57,6 +58,7 @@ export default function SecaoContato() {
     setMensagemEnvio("")
 
     try {
+      // Envia dados para a API
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
@@ -68,7 +70,7 @@ export default function SecaoContato() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Erro ao enviar mensagem")
+        throw new Error(data.message || "Erro ao enviar mensagem")
       }
 
       setMensagemEnvio("Mensagem enviada com sucesso! Entraremos em contato em breve.")
@@ -77,6 +79,7 @@ export default function SecaoContato() {
         nome: "",
         email: "",
         telefone: "",
+        tipoProjeto: "site",
         mensagem: "",
       })
 
@@ -91,30 +94,20 @@ export default function SecaoContato() {
     } catch (error) {
       setMensagemEnvio("Erro ao enviar mensagem. Por favor, tente novamente.")
       setTipoMensagem("erro")
+      console.error("Erro no envio:", error)
     } finally {
       setEnviando(false)
     }
   }
   //#endregion
 
-  //#region Dados de Contato
-  // Informações de contato exibidas na seção
-  const infoContato = [
-    {
-      icone: <Mail className="h-5 w-5 text-marrom-medio" />,
-      titulo: "Email",
-      conteudo: "contato@cmjcodehaven.com.br",
-    },
-    {
-      icone: <Phone className="h-5 w-5 text-marrom-medio" />,
-      titulo: "Telefone",
-      conteudo: "+55 (11) 9999-8888",
-    },
-    {
-      icone: <MapPin className="h-5 w-5 text-marrom-medio" />,
-      titulo: "Endereço",
-      conteudo: "Av. Paulista, 1000 - São Paulo, SP",
-    },
+  //#region Tipos de Projeto
+  // Opções para o tipo de projeto
+  const tiposProjeto = [
+    { valor: "site", label: "Sites" },
+    { valor: "ecommerce", label: "E-commerce" },
+    { valor: "aplicacao", label: "Aplicação Web" },
+    { valor: "outros", label: "Outros" },
   ]
   //#endregion
 
@@ -132,43 +125,45 @@ export default function SecaoContato() {
             Entre em <span className="text-marrom-medio">Contato</span>
           </h2>
           <div className="w-20 h-1 bg-marrom-medio mx-auto mb-6"></div>
-          <p className="text-marrom-escuro/80 leading-relaxed">
+          <p className="text-marrom-escuro/80">
             Estamos prontos para transformar sua ideia em realidade. Entre em contato conosco para discutir seu projeto
             e descobrir como podemos ajudar.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="bg-bege-medio/50 p-8 relative z-10"
-          >
-            <h3 className="text-2xl font-semibold text-marrom-escuro mb-6">Envie uma Mensagem</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto bg-bege-medio/30 rounded-lg overflow-hidden shadow-lg"
+        >
+          <div className="p-8 md:p-12">
+            <h3 className="text-2xl font-semibold text-marrom-escuro mb-8 text-center">Nos Conte Sobre Seu Projeto</h3>
+
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="nome" className="block text-marrom-escuro mb-2 text-sm">
-                  Nome Completo
-                </label>
-                <input
-                  type="text"
-                  id="nome"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  onFocus={() => handleFocus("nome")}
-                  onBlur={handleBlur}
-                  required
-                  className="w-full px-4 py-3 bg-bege-claro border transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-marrom-medio/50 border-marrom-claro/30 hover:border-marrom-medio"
-                  placeholder="Seu nome"
-                />
-              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="email" className="block text-marrom-escuro mb-2 text-sm">
-                    Email
+                  <label htmlFor="nome" className="block text-marrom-escuro mb-2 text-sm font-medium">
+                    Nome Completo <span className="text-marrom-medio">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("nome")}
+                    onBlur={handleBlur}
+                    required
+                    className="w-full px-4 py-3 bg-bege-claro border transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-marrom-medio/50 border-marrom-claro/30 hover:border-marrom-medio"
+                    placeholder="Seu nome"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-marrom-escuro mb-2 text-sm font-medium">
+                    Email <span className="text-marrom-medio">*</span>
                   </label>
                   <input
                     type="email"
@@ -183,8 +178,11 @@ export default function SecaoContato() {
                     placeholder="seu@email.com"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="telefone" className="block text-marrom-escuro mb-2 text-sm">
+                  <label htmlFor="telefone" className="block text-marrom-escuro mb-2 text-sm font-medium">
                     Telefone
                   </label>
                   <input
@@ -199,10 +197,33 @@ export default function SecaoContato() {
                     placeholder="(00) 00000-0000"
                   />
                 </div>
+
+                <div>
+                  <label htmlFor="tipoProjeto" className="block text-marrom-escuro mb-2 text-sm font-medium">
+                    Tipo de Projeto <span className="text-marrom-medio">*</span>
+                  </label>
+                  <select
+                    id="tipoProjeto"
+                    name="tipoProjeto"
+                    value={formData.tipoProjeto}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("tipoProjeto")}
+                    onBlur={handleBlur}
+                    required
+                    className="w-full px-4 py-3 bg-bege-claro border transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-marrom-medio/50 border-marrom-claro/30 hover:border-marrom-medio appearance-none"
+                  >
+                    {tiposProjeto.map((tipo) => (
+                      <option key={tipo.valor} value={tipo.valor}>
+                        {tipo.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
               <div>
-                <label htmlFor="mensagem" className="block text-marrom-escuro mb-2 text-sm">
-                  Mensagem
+                <label htmlFor="mensagem" className="block text-marrom-escuro mb-2 text-sm font-medium">
+                  Detalhes do Projeto <span className="text-marrom-medio">*</span>
                 </label>
                 <textarea
                   id="mensagem"
@@ -214,93 +235,61 @@ export default function SecaoContato() {
                   required
                   rows={5}
                   className="w-full px-4 py-3 bg-bege-claro border transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-marrom-medio/50 resize-none border-marrom-claro/30 hover:border-marrom-medio"
-                  placeholder="Descreva seu projeto ou dúvida..."
+                  placeholder="Descreva seu projeto, objetivos, funcionalidades desejadas e prazos..."
                 ></textarea>
               </div>
-              <motion.button
-                type="submit"
-                disabled={enviando}
-                className="bg-marrom-escuro text-bege-claro px-6 py-3 rounded-md hover:bg-marrom-medio transition-all duration-300 flex items-center justify-center gap-2 w-full md:w-auto disabled:opacity-70 hover:scale-105"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {enviando ? (
-                  "Enviando..."
-                ) : (
-                  <>
-                    <Send className="h-4 w-4" />
-                    <span>Enviar Mensagem</span>
-                  </>
-                )}
-              </motion.button>
+
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p className="text-marrom-escuro/70 text-sm">
+                  <span className="text-marrom-medio">*</span> Campos obrigatórios
+                </p>
+
+                <motion.button
+                  type="submit"
+                  disabled={enviando}
+                  className="bg-marrom-escuro text-bege-claro px-8 py-3 rounded-md hover:bg-marrom-medio transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 hover:scale-105 min-w-[200px]"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {enviando ? (
+                    "Enviando..."
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      <span>Enviar Mensagem</span>
+                    </>
+                  )}
+                </motion.button>
+              </div>
+
               {mensagemEnvio && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`mt-4 p-3 rounded-md ${
+                  className={`mt-4 p-4 rounded-md flex items-center gap-3 ${
                     tipoMensagem === "sucesso" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                   }`}
                 >
+                  {tipoMensagem === "sucesso" && <CheckCircle className="h-5 w-5" />}
                   {mensagemEnvio}
                 </motion.div>
               )}
             </form>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="flex flex-col justify-between relative z-10"
-          >
-            <div>
-              <h3 className="text-2xl font-semibold text-marrom-escuro mb-6">Informações de Contato</h3>
-              <div className="space-y-6 mb-12">
-                {infoContato.map((info, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-start gap-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="bg-marrom-claro/20 p-3 rounded-md">{info.icone}</div>
-                    <div>
-                      <h4 className="text-marrom-escuro font-medium">{info.titulo}</h4>
-                      <p className="text-marrom-escuro/70">{info.conteudo}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-marrom-escuro text-bege-claro p-8 rounded-md"
-            >
-              <h3 className="text-xl font-semibold mb-4">Horário de Atendimento</h3>
-              <div className="space-y-2">
-                <p className="flex justify-between">
-                  <span>Segunda - Sexta:</span>
-                  <span>9:00 - 18:00</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Sábado:</span>
-                  <span>10:00 - 14:00</span>
-                </p>
-                <p className="flex justify-between">
-                  <span>Domingo:</span>
-                  <span>Fechado</span>
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto mt-12 text-center"
+        >
+          <p className="text-marrom-escuro/70 italic">
+            &quot;Cada projeto é uma oportunidade para criar algo extraordinário. Estamos ansiosos para trabalhar com
+            você!&quot;
+          </p>
+        </motion.div>
       </div>
     </section>
   )

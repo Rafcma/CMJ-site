@@ -19,38 +19,31 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   //#region Efeito de Rolagem Suave
   // Configuração do comportamento de rolagem suave
   useEffect(() => {
-    const html = document.documentElement
-
-    const scrollPosition = window.scrollY
-    let scrollTarget: number | null = null
-    let animationFrameId: number | null = null
-
-    const smoothScroll = (targetPosition: number, duration = 1000) => {
-      scrollTarget = targetPosition
+    // Função para rolagem suave
+    const smoothScroll = (targetPosition: number, duration = 800) => {
       const startPosition = window.scrollY
       const distance = targetPosition - startPosition
-      const startTime = performance.now()
+      let startTime: number | null = null
 
-      const step = (currentTime: number) => {
-        const elapsedTime = currentTime - startTime
-        const progress = Math.min(elapsedTime / duration, 1)
-        const easeInOutCubic =
-          progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2
+      function animacao(currentTime: number) {
+        if (startTime === null) startTime = currentTime
+        const timeElapsed = currentTime - startTime
+        const percentageComplete = Math.min(timeElapsed / duration, 1)
 
-        window.scrollTo(0, startPosition + distance * easeInOutCubic)
+        // Função de easing para suavizar o movimento
+        const easeInOutQuad = (t: number) => {
+          return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
+        }
 
-        if (progress < 1) {
-          animationFrameId = requestAnimationFrame(step)
-        } else {
-          scrollTarget = null
+        const run = easeInOutQuad(percentageComplete)
+        window.scrollTo(0, startPosition + distance * run)
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animacao)
         }
       }
 
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId)
-      }
-
-      animationFrameId = requestAnimationFrame(step)
+      requestAnimationFrame(animacao)
     }
 
     const handleClick = (event: MouseEvent) => {
@@ -72,7 +65,8 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
         const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY
         smoothScroll(targetPosition)
 
-        router.push(`#${targetId}`, { scroll: false })
+        // Atualiza a URL sem causar recarregamento
+        window.history.pushState({}, "", href)
       }
     }
 
@@ -80,9 +74,6 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
 
     return () => {
       document.removeEventListener("click", handleClick)
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId)
-      }
     }
   }, [router])
   //#endregion

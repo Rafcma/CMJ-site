@@ -58,7 +58,7 @@ export default function SecaoHero() {
                     delay: 0.1 + i * 0.05,
                     ease: [0.33, 1, 0.68, 1],
                   }}
-                  className="inline-block mr-2 mb-2"
+                  className="fonte-bodoni inline-block mr-2 mb-2"
                 >
                   {word}
                 </motion.span>
@@ -83,46 +83,34 @@ export default function SecaoHero() {
             className="flex flex-col sm:flex-row gap-6 justify-center"
           >
             <Link
-              href="#contato"
-              className="bg-marrom-escuro text-bege-claro px-8 py-3 rounded-md hover:bg-marrom-medio transition-all duration-300 transform hover:scale-105 text-center font-light tracking-wide text-lg relative overflow-hidden group"
+              href="/contato-servico"
+              className="botao-iniciar-projeto bg-marrom-escuro text-bege-claro px-8 py-3 rounded-md transition-all duration-500 transform hover:scale-105 text-center font-light tracking-wide text-lg relative overflow-hidden group"
             >
               <span className="relative z-10">Iniciar Projeto</span>
               <motion.span
-                className="absolute inset-0 bg-marrom-medio z-0 rounded-md"
+                className="absolute inset-0 bg-gradient-to-r from-marrom-medio to-marrom-escuro z-0 rounded-md"
                 initial={{ x: "-100%" }}
                 whileHover={{ x: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              />
-            </Link>
-            <Link
-              href="#portfolio"
-              className="border border-marrom-escuro text-marrom-escuro px-8 py-3 rounded-md hover:bg-marrom-escuro hover:text-bege-claro transition-all duration-300 transform hover:scale-105 text-center font-light tracking-wide text-lg relative overflow-hidden group"
-            >
-              <span className="relative z-10">Ver Portfólio</span>
-              <motion.span
-                className="absolute inset-0 bg-marrom-escuro z-0 rounded-md"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
               />
             </Link>
           </motion.div>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.5,
-            delay: 1.5,
-            repeat: Number.POSITIVE_INFINITY,
-            repeatType: "reverse",
-            repeatDelay: 0.5,
-          }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-          onClick={scrollParaProximaSecao}
-        >
-          <ArrowDown className="text-marrom-escuro h-8 w-8" />
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5,
+              delay: 1.5,
+              repeat: Number.POSITIVE_INFINITY,
+              repeatType: "reverse",
+              repeatDelay: 0.5,
+            }}
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+            onClick={scrollParaProximaSecao}
+          >
+            <ArrowDown className="text-marrom-escuro h-8 w-8" />
+          </motion.div>
         </motion.div>
       </div>
     </section>

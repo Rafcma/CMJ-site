@@ -24,7 +24,7 @@ module.exports = {
 
     // Personalização de cores, espaçamentos e animações
     extend: {
-      //#region Cores 
+      //#region Cores
       // Paleta de cores do projeto
       colors: {
         "bege-claro": "#f7f7f7",
@@ -91,10 +91,9 @@ module.exports = {
       },
       //#endregion
     },
-
   },
-    //#endregion
-    
+  //#endregion
+
   //#region Plugins
   // pugling baixado do tailwind (animate)
   plugins: [require("tailwindcss-animate")],
