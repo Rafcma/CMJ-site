@@ -2,15 +2,30 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { CheckCircle, ArrowRight, Calendar, Briefcase, Code, Palette, Zap } from "lucide-react"
-import { useMobile } from "@/hooks/use-mobile"
 
 export default function FormularioServico() {
   // Referência para o formulário
   const formRef = useRef<HTMLFormElement>(null)
-  const isMobile = useMobile()
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detectar dispositivo móvel
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Verificação inicial
+    checkMobile()
+
+    // Adiciona listener para redimensionamento
+    window.addEventListener("resize", checkMobile)
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   // Estado do formulário
   const [formData, setFormData] = useState({
