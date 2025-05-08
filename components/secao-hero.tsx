@@ -22,7 +22,7 @@ export default function SecaoHero() {
 
   //#region Dados de Conteúdo
   // Texto e conteudo da seção
-  const titleWords = "Transformamos  ideias  em  experiências  digitais  excepcionais".split(" ")
+  const titleWords = "Transformamos ideias em experiências digitais excepcionais".split(" ")
   //#endregion
 
   //#region Manipuladores de Eventos

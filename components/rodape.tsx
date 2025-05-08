@@ -1,12 +1,39 @@
 "use client"
 
+import type React from "react"
+
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { Facebook, Instagram, Linkedin, Twitter, Mail, Clock } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 export default function Rodape() {
   const anoAtual = new Date().getFullYear()
+  const pathname = usePathname()
+
+  // Função para lidar com cliques em links de âncora
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Se estiver em outra página e o link for para uma âncora na página inicial
+    if (pathname !== "/" && href.startsWith("#")) {
+      e.preventDefault()
+      window.location.href = "/" + href
+      return
+    }
+
+    // Se estiver na página inicial e o link for para uma âncora
+    if (pathname === "/" && href.startsWith("#")) {
+      e.preventDefault()
+      const targetId = href.replace("#", "")
+      const targetElement = document.getElementById(targetId)
+
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" })
+        // Atualiza a URL sem causar recarregamento
+        window.history.pushState({}, "", href)
+      }
+    }
+  }
 
   return (
     <footer className="bg-marrom-escuro text-bege-claro relative overflow-hidden">
@@ -120,17 +147,25 @@ export default function Rodape() {
               className="space-y-3"
             >
               <li>
-                <Link href="#inicio" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link href="/" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
                   Início
                 </Link>
               </li>
               <li>
-                <Link href="#sobre" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#sobre"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#sobre")}
+                >
                   Sobre Nós
                 </Link>
               </li>
               <li>
-                <Link href="#servicos" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   Serviços
                 </Link>
               </li>
@@ -140,7 +175,11 @@ export default function Rodape() {
                 </Link>
               </li>
               <li>
-                <Link href="#contato" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#contato"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#contato")}
+                >
                   Contato
                 </Link>
               </li>
@@ -165,27 +204,47 @@ export default function Rodape() {
               className="space-y-3"
             >
               <li>
-                <Link href="#" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   Sites
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   E-commerce
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   Sistemas Web
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   SEO & Performance
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-bege-claro/80 hover:text-bege-claro transition-colors">
+                <Link
+                  href="/#servicos"
+                  className="text-bege-claro/80 hover:text-bege-claro transition-colors"
+                  onClick={(e) => handleAnchorClick(e, "#servicos")}
+                >
                   Manutenção & Suporte
                 </Link>
               </li>

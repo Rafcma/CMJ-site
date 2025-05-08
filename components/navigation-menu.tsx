@@ -1,9 +1,12 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import BlobEffect from "./ui/blob-effect"
 
@@ -17,6 +20,7 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
+  const pathname = usePathname()
 
   // Referência para limitar o efeito de scroll até a próxima seção
   const { scrollY } = useScroll()
@@ -47,16 +51,21 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
       document.body.style.overflow = ""
     }
   }, [isOpen])
+
+  // Fechar o menu quando a rota mudar
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
   //#endregion
 
   //#region Dados de Navegação
   // Links e itens do menu
   const menuLinks = [
-    { name: "Início", href: "#inicio" },
-    { name: "Sobre", href: "#sobre" },
-    { name: "Serviços", href: "#servicos" },
-    { name: "Portfólio", href: "#portfolio" },
-    { name: "Contato", href: "#contato" },
+    { name: "Início", href: "/" },
+    { name: "Sobre", href: "/#sobre" },
+    { name: "Serviços", href: "/#servicos" },
+    { name: "Portfólio", href: "/nosso-portfolio" },
+    { name: "Contato", href: "/#contato" },
   ]
   //#endregion
 
@@ -91,6 +100,30 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
         duration: 0.5,
       },
     }),
+  }
+  //#endregion
+
+  //#region Manipuladores de Eventos
+  // Função para lidar com cliques em links de âncora
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Se estiver em outra página e o link for para uma âncora na página inicial
+    if (pathname !== "/" && href.startsWith("/#")) {
+      // Não previne o comportamento padrão, deixa navegar para a página inicial com a âncora
+      return
+    }
+
+    // Se estiver na página inicial e o link for para uma âncora
+    if (pathname === "/" && href.startsWith("/#")) {
+      e.preventDefault()
+      const targetId = href.replace("/#", "")
+      const targetElement = document.getElementById(targetId)
+
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth" })
+        // Atualiza a URL sem causar recarregamento
+        window.history.pushState({}, "", href)
+      }
+    }
   }
   //#endregion
 
@@ -200,7 +233,7 @@ export default function NavigationMenu({ className }: NavigationMenuProps) {
                       <Link
                         href={link.href}
                         className="text-marrom-escuro dark:text-bege-claro hover:text-marrom-medio dark:hover:text-marrom-claro text-5xl md:text-6xl font-light tracking-tighter hover:scale-105 transition-all duration-300 hover:shadow-glow"
-                        onClick={() => setIsOpen(false)}
+                        onClick={(e) => handleAnchorClick(e, link.href)}
                       >
                         {link.name}
                       </Link>
