@@ -7,14 +7,40 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { nome, email, telefone, empresa, tipoProjeto, prazo, orcamento, descricao, mensagem } = body
 
-    // Configura o transporte de email
+    // Verifica se as variáveis de ambiente estão definidas
+    const emailUser = process.env.EMAIL_USER
+    const emailPass = process.env.EMAIL_PASS
+
+    if (!emailUser || !emailPass) {
+      console.error("Variáveis de ambiente EMAIL_USER ou EMAIL_PASS não definidas")
+      return NextResponse.json(
+        { success: false, message: "Configuração de email incompleta no servidor" },
+        { status: 500 },
+      )
+    }
+
+    // Configura o transporte de email com logs para debug
+    console.log("Configurando transporte de email com:", { emailUser })
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER || "cmjcodehaven@gmail.com",
-        pass: process.env.EMAIL_PASS, // Senha de app gerada no Google
+        user: emailUser,
+        pass: emailPass,
       },
+      debug: true, // Ativa logs para debug
     })
+
+    // Verifica a conexão com o servidor de email
+    try {
+      await transporter.verify()
+      console.log("Conexão com servidor de email verificada com sucesso")
+    } catch (verifyError) {
+      console.error("Erro ao verificar conexão com servidor de email:", verifyError)
+      return NextResponse.json(
+        { success: false, message: "Não foi possível conectar ao servidor de email" },
+        { status: 500 },
+      )
+    }
 
     // Mapeia o tipo de projeto para um nome mais amigável
     const tipoProjetoNome =
@@ -50,8 +76,8 @@ export async function POST(request: Request) {
 
     // Configura o email
     const mailOptions = {
-      from: process.env.EMAIL_USER || "cmjcodehaven@gmail.com",
-      to: "cmjcodehaven@gmail.com",
+      from: emailUser,
+      to: emailUser, // Envia para o mesmo email (você pode alterar para outro destinatário)
       subject: isFormularioDetalhado
         ? `Novo projeto - ${nome} - ${tipoProjetoNome}`
         : `Novo contato do site - ${nome} - ${tipoProjetoNome}`,
@@ -81,14 +107,27 @@ export async function POST(request: Request) {
         `,
     }
 
-    // Envia o email
-    await transporter.sendMail(mailOptions)
+    console.log("Enviando email com as seguintes opções:", {
+      to: mailOptions.to,
+      subject: mailOptions.subject,
+    })
 
-    return NextResponse.json({ success: true, message: "Mensagem enviada com sucesso!" }, { status: 200 })
+    // Envia o email
+    try {
+      const info = await transporter.sendMail(mailOptions)
+      console.log("Email enviado com sucesso:", info.response)
+      return NextResponse.json({ success: true, message: "Mensagem enviada com sucesso!" }, { status: 200 })
+    } catch (sendError) {
+      console.error("Erro ao enviar email:", sendError)
+      return NextResponse.json(
+        { success: false, message: "Erro ao enviar mensagem", error: String(sendError) },
+        { status: 500 },
+      )
+    }
   } catch (error) {
-    console.error("Erro ao enviar email:", error)
+    console.error("Erro geral ao processar requisição:", error)
     return NextResponse.json(
-      { success: false, message: "Erro ao enviar mensagem", error: String(error) },
+      { success: false, message: "Erro ao processar requisição", error: String(error) },
       { status: 500 },
     )
   }

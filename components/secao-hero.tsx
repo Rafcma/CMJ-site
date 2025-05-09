@@ -45,9 +45,9 @@ export default function SecaoHero() {
       </div>
 
       <div className="container mx-auto px-4 z-10 flex flex-col items-center justify-center">
-        <motion.div style={{ opacity, scale, y }} className="text-center max-w-4xl mx-auto mb-12 relative">
+        <motion.div style={{ opacity, scale, y }} className="text-center max-w-5xl mx-auto mb-12 relative">
           <div className="overflow-hidden">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-marrom-escuro leading-tight tracking-tighter mb-8">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-marrom-escuro leading-tight tracking-tighter mb-8">
               {titleWords.map((word, i) => (
                 <motion.span
                   key={i}
@@ -58,7 +58,7 @@ export default function SecaoHero() {
                     delay: 0.1 + i * 0.05,
                     ease: [0.33, 1, 0.68, 1],
                   }}
-                  className="fonte-bodoni inline-block mr-2 mb-2"
+                  className="fonte-bodoni inline-block mr-2 mb-2 font-bold"
                 >
                   {word}
                 </motion.span>
@@ -96,12 +96,12 @@ export default function SecaoHero() {
             </Link>
           </motion.div>
 
-          {/* Seta posicionada de forma fixa abaixo do botão */}
+          {/* Seta posicionada de forma fixa abaixo do botão com z-index aumentado */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 1.5 }}
-            className="absolute left-1/2 transform -translate-x-1/2 -bottom-16 cursor-pointer"
+            className="absolute left-1/2 transform -translate-x-1/2 -bottom-16 cursor-pointer z-10"
             onClick={scrollParaProximaSecao}
           >
             <motion.div
